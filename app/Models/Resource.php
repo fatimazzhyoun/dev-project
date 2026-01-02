@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ResourceCategory;
+use App\Models\Maintenance;
 
 class Resource extends Model
 {
@@ -117,5 +119,10 @@ class Resource extends Model
     public function activeReservations()
     {
         return $this->reservations()->where('status', 'active');
+    }
+
+    // Cette fonction permet de dire : "Une ressource APPARTIENT À une catégorie"
+   public function ResourceCategory() {
+    return $this->belongsTo(ResourceCategory::class, 'category_id');
     }
 }
