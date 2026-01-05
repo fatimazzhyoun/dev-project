@@ -1,38 +1,37 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminResourceController;
-use App\Http\Controllers\AdminMaintenanceController;
+use App\Http\Controllers\AdminResourceController;     // Controller dyal l-bent
+use App\Http\Controllers\AdminMaintenanceController;  // Controller dyal Maintenance
 
+// 1. Redirection: Mli dkhl l site (localhost:8000), ydikk direct l Dashboard
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('admin.dashboard');
 });
 
-// Route pour voir la LISTE des ressources
-Route::get('/admin/resources', [AdminResourceController::class, 'index'])
-    ->name('admin.resources.index');
+// 2. Route DASHBOARD (Version Simple w Madmona)
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard', [
+        'totalUsers' => \App\Models\User::count(),
+        'totalResources' => \Illuminate\Support\Facades\DB::table('resources')->count(),
+        'totalCategories' => \Illuminate\Support\Facades\DB::table('resource_categories')->count(),
+    ]);
+})->name('admin.dashboard');
 
-// Route pour AFFICHER le formulaire d'ajout
-Route::get('/admin/resources/create', [AdminResourceController::class, 'create'])
-    ->name('admin.resources.create');
-
-// Route pour SAUVEGARDER une nouvelle ressource
-Route::post('/admin/resources', [AdminResourceController::class, 'store'])
-    ->name('admin.resources.store');
-
-// Route pour AFFICHER le formulaire de modification
-Route::get('/admin/resources/{resource}/edit', [AdminResourceController::class, 'edit'])
-    ->name('admin.resources.edit');
-
-// Route pour SAUVEGARDER les modifications
-Route::put('/admin/resources/{resource}', [AdminResourceController::class, 'update'])
-    ->name('admin.resources.update');
-
-// Route pour changer le status (Activer/Désactiver)
-Route::post('/admin/resources/{resource}/toggle', [AdminResourceController::class, 'toggleStatus'])
-    ->name('admin.resources.toggle');
-
-// Routes pour la Maintenance
-Route::get('/admin/maintenances', [AdminMaintenanceController::class, 'index'])->name('admin.maintenances.index');
-Route::get('/admin/maintenances/create', [AdminMaintenanceController::class, 'create'])->name('admin.maintenances.create');
-Route::post('/admin/maintenances', [AdminMaintenanceController::class, 'store'])->name('admin.maintenances.store');
+// 3. Routes RESSOURCES & MAINTENANCE (Mjoum3in taht /admin)
+Route::prefix('admin')->name('admin.')->group(function () {
+    
+    // --- RESSOURCES ---
+    Route::get('/resources', [AdminResourceController::class, 'index'])->name('resources.index');
+    Route::get('/resources/create', [AdminResourceController::class, 'create'])->name('resources.create');
+    Route::post('/resources', [AdminResourceController::class, 'store'])->name('resources.store');
+    Route::get('/resources/{resource}/edit', [AdminResourceController::class, 'edit'])->name('resources.edit');
+    Route::put('/resources/{resource}', [AdminResourceController::class, 'update'])->name('resources.update');
+    
+    // 👇 HADI HIYA LI BDDLNA (Kan smitha toggle, rddinaha update-status)
+    Route::post('/resources/{resource}/update-status', [AdminResourceController::class, 'updateStatus'])->name('resources.updateStatus');
+    // --- MAINTENANCES ---
+    Route::get('/maintenances', [AdminMaintenanceController::class, 'index'])->name('maintenances.index');
+    Route::get('/maintenances/create', [AdminMaintenanceController::class, 'create'])->name('maintenances.create');
+    Route::post('/maintenances', [AdminMaintenanceController::class, 'store'])->name('maintenances.store');
+});

@@ -105,4 +105,18 @@ public function update(Request $request, Resource $resource)
         ->with('success', 'Ressource mise à jour avec succès !');
 }
 
+
+// HADI HIYA LI KANT NAQSA
+    public function updateStatus(Request $request, Resource $resource)
+    {
+        $request->validate([
+            'status' => 'required|in:disponible,reserve,maintenance,desactive'
+        ]);
+
+        $resource->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Statut modifié avec succès !');
+    }
 }
