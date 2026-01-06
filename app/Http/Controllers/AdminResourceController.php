@@ -107,16 +107,18 @@ public function update(Request $request, Resource $resource)
 
 
 // HADI HIYA LI KANT NAQSA
-    public function updateStatus(Request $request, Resource $resource)
-    {
-        $request->validate([
-            'status' => 'required|in:disponible,reserve,maintenance,desactive'
-        ]);
-
-        $resource->update([
-            'status' => $request->status
-        ]);
-
-        return back()->with('success', 'Statut modifié avec succès !');
-    }
+    /**
+ * Mettre à jour le status d'une ressource
+ */
+public function updateStatus(Request $request, Resource $resource)
+{
+    $validated = $request->validate([
+        'status' => 'required|in:disponible,reserve,maintenance,desactive',
+    ]);
+    
+    $resource->update(['status' => $validated['status']]);
+    
+    return redirect()->route('admin.resources.index')
+        ->with('success', 'Status mis à jour avec succès !');
+}
 }

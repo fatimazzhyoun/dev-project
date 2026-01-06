@@ -6,7 +6,7 @@
     <title>Ajouter une ressource - Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #2563eb; --bg-body: #f3f4f6; --bg-card: #ffffff; --text-main: #1f2937; --border: #e5e7eb; }
+        :root { --primary: #2549ebff; --bg-body: #f3f4f6; --bg-card: #ffffff; --text-main: #1f2937; --border: #e5e7eb; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; justify-content: center; padding: 40px 20px; }
         
         .form-card {

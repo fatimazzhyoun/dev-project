@@ -18,42 +18,49 @@
         <aside class="sidebar">
             <div class="logo"><h2>DC Admin</h2></div>
             <nav>
-                    <ul class="side-menu">
-        <li class="{{ Request::is('admin/dashboard') ? 'active' : '' }}">
-            <a href="{{ route('admin.dashboard') }}">
-                <i class='bx bxs-dashboard'></i>
-                <span class="text">Dashboard</span>
-            </a>
-        </li>
+<ul class="side-menu">
+    <li class="{{ Request::is('admin/dashboard') ? 'active' : '' }}">
+        <a href="/admin/dashboard">
+            <i class='bx bxs-dashboard'></i>
+            <span class="text">Dashboard</span>
+        </a>
+    </li>
 
-        <li class="{{ Request::is('admin/users*') ? 'active' : '' }}">
-            <a href="#"> 
-                <i class='bx bxs-group'></i>
-                <span class="text">Utilisateurs</span>
-            </a>
-        </li>
+    <li class="{{ Request::is('admin/users*') ? 'active' : '' }}">
+        <a href="/admin/users"> 
+            <i class='bx bxs-group'></i>
+            <span class="text">Utilisateurs</span>
+        </a>
+    </li>
 
-        <li class="{{ Request::routeIs('admin.resources.*') ? 'active' : '' }}">
-    <a href="{{ route('admin.resources.index') }}">
-        <i class='bx bxs-server'></i>
-        <span class="text">Ressources</span>
-    </a>
-        </li>
+    <li class="{{ Request::routeIs('admin.resources.*') ? 'active' : '' }}">
+        <a href="/admin/resources">
+            <i class='bx bxs-server'></i>
+            <span class="text">Ressources</span>
+        </a>
+    </li>
 
-        <li class="{{ Request::is('admin/categories*') ? 'active' : '' }}">
-            <a href="#">
-                <i class='bx bxs-category'></i>
-                <span class="text">Catégories</span>
-            </a>
-        </li>
+    <li class="{{ Request::is('admin/categories*') ? 'active' : '' }}">
+        <a href="/admin/categories">
+            <i class='bx bxs-category'></i>
+            <span class="text">Catégories</span>
+        </a>
+    </li>
 
-        <li class="{{ Request::is('admin/reservations*') ? 'active' : '' }}">
-            <a href="#">
-                <i class='bx bxs-calendar-check'></i>
-                <span class="text">Réservations</span>
-            </a>
-        </li>
-    </ul>
+    <li class="{{ Request::routeIs('admin.maintenances.*') ? 'active' : '' }}">
+        <a href="/admin/maintenances">
+            <i class='bx bxs-wrench'></i>
+            <span class="text">Maintenances</span>
+        </a>
+    </li>
+
+    <li class="{{ Request::is('admin/reservations*') ? 'active' : '' }}">
+        <a href="/admin/reservations">
+            <i class='bx bxs-calendar-check'></i>
+            <span class="text">Réservations</span>
+        </a>
+    </li>
+</ul>
 
     <ul class="side-menu">
         <li>
