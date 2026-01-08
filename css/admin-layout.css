@@ -1,0 +1,96 @@
+:root {
+    --primary-color: #2ecc71;       /* Vert Émeraude */
+    --secondary-color: #27ae60;     /* Vert Foncé */
+    --accent-color: #e74c3c;        /* Rouge */
+    --sidebar-bg: #2c3e50;          /* Bleu Nuit */
+    --bg-color: #f5f7fa;            /* Gris très clair */
+    --card-bg: #ffffff;             /* Blanc */
+    --text-dark: #2c3e50;
+    --text-light: #ecf0f1;
+    --gray-color: #7f8c8d;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --border-radius: 12px;
+    --sidebar-width: 260px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; }
+
+.admin-container { display: grid; grid-template-columns: var(--sidebar-width) 1fr; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+    background-color: var(--sidebar-bg); color: var(--text-light);
+    display: flex; flex-direction: column; padding: 25px;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.05); z-index: 10;
+}
+.sidebar .logo { margin-bottom: 50px; text-align: center; }
+.sidebar .logo h2 { 
+    font-size: 24px; font-weight: 800;
+    background: linear-gradient(45deg, var(--primary-color), #ffffff);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+}
+.sidebar nav ul { list-style: none; }
+.sidebar nav ul li { margin-bottom: 8px; }
+.sidebar nav ul li a {
+    display: flex; align-items: center; gap: 12px;
+    color: #bdc3c7; text-decoration: none;
+    padding: 12px 15px; border-radius: 10px;
+    transition: var(--transition); font-weight: 500; font-size: 15px;
+}
+.sidebar nav ul li a:hover, .sidebar nav ul li a[style*="background"] {
+    background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), transparent) !important;
+    color: var(--primary-color) !important;
+    border-left: 3px solid var(--primary-color);
+}
+.sidebar nav ul li a i { font-size: 20px; }
+.logout-section { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+.logout-section a { color: var(--accent-color); text-decoration: none; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+
+/* HEADER & MAIN CONTENT */
+.main-content { display: flex; flex-direction: column; }
+.top-bar {
+    background: var(--card-bg); height: 70px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 5;
+}
+.content-wrapper { padding: 40px; }
+
+.user-info { display: flex; align-items: center; gap: 15px; }
+.user-info span { font-weight: 600; color: var(--sidebar-bg); }
+
+/* --- NOUVEAU : NOTIFICATIONS --- */
+.header-actions { display: flex; align-items: center; gap: 25px; }
+
+.notif-box { position: relative; cursor: pointer; display: flex; align-items: center; }
+.notif-box i { font-size: 26px; color: var(--gray-color); transition: 0.3s; }
+.notif-box:hover i { color: var(--primary-color); }
+
+.notif-count {
+    position: absolute; top: -5px; right: -5px;
+    background: var(--accent-color); color: white;
+    font-size: 10px; font-weight: bold;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid white;
+}
+
+.notif-dropdown {
+    display: none; position: absolute; right: 0; top: 40px;
+    background: white; width: 320px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 12px; border: 1px solid #f0f0f0; z-index: 100;
+    overflow: hidden; animation: slideDown 0.2s ease;
+}
+
+.notif-header { padding: 15px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: var(--sidebar-bg); background: #f9f9f9; }
+.notif-item { padding: 15px; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; gap: 10px; align-items: start; transition: 0.2s; }
+.notif-item:hover { background: #f0fcf5; }
+.notif-item:last-child { border-bottom: none; }
+.notif-content strong { display: block; color: var(--text-dark); margin-bottom: 3px; }
+.notif-content small { color: #999; }
+.notif-icon { color: var(--primary-color); font-size: 18px; margin-top: 2px; }
+
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }

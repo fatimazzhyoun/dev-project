@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .history-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .history-table th { padding: 15px; background: #f8fafc; color: #7f8c8d; font-weight: 600; text-align: left; border-bottom: 2px solid #eee; }
+        .history-table td { padding: 15px; border-bottom: 1px solid #f5f5f5; }
+        .history-table tr:hover { background: #f9fcf9; }
+        .history-table tr.completed td { background: #f9f9f9; color: #999; }
+        .export-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .export-btn { padding: 10px 20px; background: white; border: 1px solid #3498db; color: #3498db; border-radius: 5px; cursor: pointer; }
+        .export-btn:hover { background: #3498db; color: white; }
+        .year-filter { display: flex; gap: 10px; margin-bottom: 20px; }
+        .year-btn { padding: 8px 15px; background: #f5f7fa; border: 1px solid #e0e0e0; border-radius: 5px; cursor: pointer; }
+        .year-btn.active { background: #3498db; color: white; border-color: #3498db; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-dashboard'></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="catalog.html">
+                            <i class='bx bx-search-alt'></i> Catalogue
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-reservation.html">
+                            <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-reservations.html">
+                            <i class='bx bx-calendar-check'></i> Mes réservations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                            <i class='bx bx-history'></i> Historique
+                        </a>
+                    </li>
+                    <li>
+                        <a href="problem-report.html">
+                            <i class='bx bx-bug'></i> Signaler problème
+                        </a>
+                    </li>
+                    <li>
+                        <a href="user-profile.html">
+                            <i class='bx bx-cog'></i> Mon Profil
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Historique de mes réservations</h3>
+                <div class="user-info">
+                    <span>Karim User</span>
+                    <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div style="display:flex; justify-content:space-between; margin-bottom:25px;">
+                    <div class="year-filter">
+                        <button class="year-btn active" onclick="filterByYear('2026')">2026</button>
+                        <button class="year-btn" onclick="filterByYear('2025')">2025</button>
+                        <button class="year-btn" onclick="filterByYear('2024')">2024</button>
+                        <button class="year-btn" onclick="filterByYear('all')">Tous</button>
+                    </div>
+                    
+                    <div class="export-buttons">
+                        <button class="export-btn" onclick="exportCSV()">
+                            <i class='bx bx-download'></i> Exporter CSV
+                        </button>
+                        <button class="export-btn" onclick="exportPDF()">
+                            <i class='bx bx-file'></i> Exporter PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Ressource</th>
+                                <th>Période</th>
+                                <th>Durée</th>
+                                <th>Statut</th>
+                                <th>Coût estimé</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable">
+                            <tr data-year="2026" class="completed">
+                                <td>15-25 Jan 2026</td>
+                                <td><b>VM Ubuntu 22.04</b><br><small>8 vCPU, 32GB RAM</small></td>
+                                <td>15/01 - 25/01/2026</td>
+                                <td>10 jours</td>
+                                <td><span class="status active">Terminé</span></td>
+                                <td>150 crédits</td>
+                                <td>
+                                    <button class="action-btn" onclick="viewHistoryDetails(this)">
+                                        <i class='bx bx-info-circle' style="color:#3498db;"></i>
+                                    </button>
+                                    <button class="action-btn" onclick="reuseReservation(this)">
+                                        <i class='bx bx-copy' style="color:#2ecc71;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-year="2025" class="completed">
+                                <td>10-15 Dec 2025</td>
+                                <td><b>Serveur Dell R740</b><br><small>2x CPU, 128GB RAM</small></td>
+                                <td>10/12 - 15/12/2025</td>
+                                <td>5 jours</td>
+                                <td><span class="status active">Terminé</span></td>
+                                <td>300 crédits</td>
+                                <td>
+                                    <button class="action-btn" onclick="viewHistoryDetails(this)">
+                                        <i class='bx bx-info-circle' style="color:#3498db;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-year="2025" class="completed">
+                                <td>05-10 Nov 2025</td>
+                                <td><b>Baie Stockage 50TB</b><br><small>SAN All-Flash</small></td>
+                                <td>05/11 - 10/11/2025</td>
+                                <td>5 jours</td>
+                                <td><span class="status active">Terminé</span></td>
+                                <td>200 crédits</td>
+                                <td>
+                                    <button class="action-btn" onclick="viewHistoryDetails(this)">
+                                        <i class='bx bx-info-circle' style="color:#3498db;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr data-year="2024" class="completed">
+                                <td>20-30 Sep 2024</td>
+                                <td><b>VM Windows Server</b><br><small>4 vCPU, 16GB RAM</small></td>
+                                <td>20/09 - 30/09/2024</td>
+                                <td>10 jours</td>
+                                <td><span class="status active">Terminé</span></td>
+                                <td>120 crédits</td>
+                                <td>
+                                    <button class="action-btn" onclick="viewHistoryDetails(this)">
+                                        <i class='bx bx-info-circle' style="color:#3498db;"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card" style="margin-top:30px;">
+                    <h4 style="margin-bottom:20px;">Récapitulatif annuel</h4>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
+                        <div>
+                            <h6 style="color:#7f8c8d; margin-bottom:5px;">Total réservations</h6>
+                            <div style="font-size:28px; font-weight:800; color:#2c3e50;">24</div>
+                        </div>
+                        <div>
+                            <h6 style="color:#7f8c8d; margin-bottom:5px;">Jours utilisés</h6>
+                            <div style="font-size:28px; font-weight:800; color:#2c3e50;">186</div>
+                        </div>
+                        <div>
+                            <h6 style="color:#7f8c8d; margin-bottom:5px;">Crédits dépensés</h6>
+                            <div style="font-size:28px; font-weight:800; color:#2c3e50;">2,540</div>
+                        </div>
+                        <div>
+                            <h6 style="color:#7f8c8d; margin-bottom:5px;">Taux d'approbation</h6>
+                            <div style="font-size:28px; font-weight:800; color:#2ecc71;">92%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function filterByYear(year) {
+            document.querySelectorAll('.year-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            const rows = document.querySelectorAll('#historyTable tr');
+            rows.forEach(row => {
+                if (year === 'all' || row.getAttribute('data-year') === year) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function exportCSV() {
+            alert('Export CSV démarré... Les données seront téléchargées.');
+            setTimeout(() => {
+                alert('Fichier historique_utilisateur_2026.csv téléchargé avec succès.');
+            }, 1000);
+        }
+
+        function exportPDF() {
+            alert('Génération du PDF en cours...');
+            setTimeout(() => {
+                alert('Fichier historique_2026.pdf téléchargé avec succès.');
+            }, 1500);
+        }
+
+        function viewHistoryDetails(button) {
+            const row = button.closest('tr');
+            const resource = row.cells[1].querySelector('b').textContent;
+            const period = row.cells[2].textContent;
+            
+            alert(`Détails de réservation :\n\nRessource : ${resource}\nPériode : ${period}\n\nPour plus de détails, contactez le support technique.`);
+        }
+
+        function reuseReservation(button) {
+            if (confirm('Voulez-vous réutiliser cette configuration pour une nouvelle réservation ?')) {
+                location.href = 'new-reservation.html?template=previous';
+            }
+        }
+    </script>
+</body>
+</html>

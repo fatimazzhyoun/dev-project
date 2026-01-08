@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes réservations - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .status-filter { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .status-filter button { padding: 8px 15px; background: #f5f7fa; border: 1px solid #e0e0e0; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .status-filter button.active { background: #3498db; color: white; border-color: #3498db; }
+        .reservation-item { background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; border-left: 5px solid; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .reservation-item.pending { border-left-color: #f39c12; }
+        .reservation-item.approved { border-left-color: #2ecc71; }
+        .reservation-item.rejected { border-left-color: #e74c3c; }
+        .reservation-item.active { border-left-color: #3498db; }
+        .reservation-item.completed { border-left-color: #95a5a6; }
+        .reservation-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .resource-details { display: flex; gap: 15px; margin-bottom: 15px; }
+        .detail-box { background: #f8fafc; padding: 10px; border-radius: 5px; flex: 1; }
+        .detail-box h6 { margin: 0 0 5px 0; color: #7f8c8d; font-size: 12px; }
+        .detail-box p { margin: 0; font-weight: 600; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-dashboard'></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="catalog.html">
+                            <i class='bx bx-search-alt'></i> Catalogue
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-reservation.html">
+                            <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-reservations.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                            <i class='bx bx-calendar-check'></i> Mes réservations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history.html">
+                            <i class='bx bx-history'></i> Historique
+                        </a>
+                    </li>
+                    <li>
+                        <a href="problem-report.html">
+                            <i class='bx bx-bug'></i> Signaler problème
+                        </a>
+                    </li>
+                    <li>
+                        <a href="user-profile.html">
+                            <i class='bx bx-cog'></i> Mon Profil
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Mes réservations</h3>
+                <div class="user-info">
+                    <span>Karim User</span>
+                    <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="status-filter">
+                    <button class="active" onclick="filterReservations('all')">Toutes</button>
+                    <button onclick="filterReservations('pending')">En attente (2)</button>
+                    <button onclick="filterReservations('active')">Actives (3)</button>
+                    <button onclick="filterReservations('approved')">Approuvées</button>
+                    <button onclick="filterReservations('rejected')">Refusées (1)</button>
+                    <button onclick="filterReservations('completed')">Terminées</button>
+                </div>
+                <div id="reservationsList">
+                    <div class="reservation-item pending" data-status="pending">
+                        <div class="reservation-header">
+                            <div>
+                                <h4 style="margin:0;">VM Windows Server 2022</h4>
+                                <small style="color:#7f8c8d;">Demandé le 02/01/2026 • REF: RES-2026-00145</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="status inactive" style="background:#fef5e7; color:#f39c12;">En attente</span>
+                                <div style="margin-top:5px;">
+                                    <button class="action-btn" onclick="cancelReservation(this)"><i class='bx bx-x-circle' style="color:#e74c3c;"></i></button>
+                                    <button class="action-btn" onclick="viewDetails(this)"><i class='bx bx-info-circle' style="color:#3498db;"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-details">
+                            <div class="detail-box">
+                                <h6>PÉRIODE</h6>
+                                <p>10 - 20 Jan 2026</p>
+                            </div>
+                            <div class="detail-box">
+                                <h6>CONFIGURATION</h6>
+                                <p>4 vCPU, 16GB RAM</p>
+                            </div>
+                            <div class="detail-box">
+                                <h6>JUSTIFICATION</h6>
+                                <p>Projet de recherche IA</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reservation-item active" data-status="active">
+                        <div class="reservation-header">
+                            <div>
+                                <h4 style="margin:0;">VM Ubuntu 22.04</h4>
+                                <small style="color:#7f8c8d;">Début: 05/01/2026 • REF: RES-2026-00123</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="status active">Active</span>
+                                <div style="margin-top:5px;">
+                                    <button class="btn-primary" style="padding:5px 15px; font-size:12px;">Accéder</button>
+                                    <button class="action-btn" onclick="viewDetails(this)"><i class='bx bx-info-circle' style="color:#3498db;"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-details">
+                            <div class="detail-box">
+                                <h6>PÉRIODE</h6>
+                                <p>05 - 25 Jan 2026</p>
+                            </div>
+                            <div class="detail-box">
+                                <h6>CONFIGURATION</h6>
+                                <p>8 vCPU, 32GB RAM</p>
+                            </div>
+                            <div class="detail-box">
+                                <h6>CONSOMMATION</h6>
+                                <p>42h / 480h utilisées</p>
+                            </div>
+                        </div>
+                        
+                        <div style="background:#e8f4ff; padding:10px; border-radius:5px; margin-top:10px;">
+                            <small><i class='bx bx-info-circle'></i> Votre réservation expire dans 5 jours</small>
+                        </div>
+                    </div>
+                    <div class="reservation-item rejected" data-status="rejected">
+                        <div class="reservation-header">
+                            <div>
+                                <h4 style="margin:0;">Serveur GPU NVIDIA</h4>
+                                <small style="color:#7f8c8d;">Demandé le 28/12/2025 • REF: RES-2025-00987</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="status inactive" style="background:#fadbd8; color:#c0392b;">Refusée</span>
+                                <div style="margin-top:5px;">
+                                    <button class="action-btn" onclick="viewRejectionReason(this)"><i class='bx bx-message-error' style="color:#e74c3c;"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-details">
+                            <div class="detail-box">
+                                <h6>PÉRIODE DEMANDÉE</h6>
+                                <p>10 - 31 Jan 2026</p>
+                            </div>
+                            <div class="detail-box">
+                                <h6>MOTIF DU REFUS</h6>
+                                <p>Ressource indisponible</p>
+                            </div>
+                            <div class="detail-box">
+                                <h6>DATE DU REFUS</h6>
+                                <p>30/12/2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:center; margin-top:30px;">
+                    <button style="background:#3498db; color:white; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">1</button>
+                    <button style="background:#ecf0f1; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">2</button>
+                    <button style="background:#ecf0f1; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">Suivant →</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="detailsModal" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <h3>Détails de la réservation</h3>
+                <span style="cursor:pointer; font-size:20px;" onclick="closeModal()">&times;</span>
+            </div>
+            
+            <div style="background:#f8fafc; padding:15px; border-radius:8px; margin-bottom:15px;">
+                <h4 style="margin:0 0 10px 0;">VM Ubuntu 22.04</h4>
+                <p><strong>Référence :</strong> RES-2026-00123</p>
+                <p><strong>Statut :</strong> <span class="status active">Active</span></p>
+            </div>
+            
+            <table style="width:100%; border-collapse:collapse;">
+                <tr><td style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Date de début</strong></td><td style="padding:8px 0; border-bottom:1px solid #eee;">05/01/2026 08:00</td></tr>
+                <tr><td style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Date de fin</strong></td><td style="padding:8px 0; border-bottom:1px solid #eee;">25/01/2026 18:00</td></tr>
+                <tr><td style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Configuration</strong></td><td style="padding:8px 0; border-bottom:1px solid #eee;">8 vCPU, 32GB RAM, 200GB SSD</td></tr>
+                <tr><td style="padding:8px 0; border-bottom:1px solid #eee;"><strong>Justification</strong></td><td style="padding:8px 0; border-bottom:1px solid #eee;">Projet de recherche sur l'apprentissage automatique pour la détection d'anomalies dans les données médicales.</td></tr>
+                <tr><td style="padding:8px 0;"><strong>Responsable technique</strong></td><td style="padding:8px 0;">Sarah Tech (sarah@datacenter.ma)</td></tr>
+            </table>
+            
+            <div style="margin-top:20px; text-align:right;">
+                <button class="btn-primary" onclick="closeModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterReservations(status) {
+            document.querySelectorAll('.status-filter button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            const reservations = document.querySelectorAll('.reservation-item');
+            reservations.forEach(res => {
+                if (status === 'all' || res.getAttribute('data-status') === status) {
+                    res.style.display = 'block';
+                } else {
+                    res.style.display = 'none';
+                }
+            });
+        }
+
+        function cancelReservation(button) {
+            if (confirm('Voulez-vous vraiment annuler cette demande de réservation ?')) {
+                const item = button.closest('.reservation-item');
+                item.style.opacity = '0.5';
+                item.querySelector('span').textContent = 'Annulation...';
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 1000);
+            }
+        }
+
+        function viewDetails(button) {
+            document.getElementById('detailsModal').style.display = 'flex';
+        }
+
+        function viewRejectionReason(button) {
+            alert('Motif du refus :\n\nCette ressource est actuellement en maintenance planifiée pour la période demandée. Veuillez choisir une autre période ou ressource.\n\nContact : tech-support@datacenter.ma');
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        window.onclick = function(e) {
+            if (e.target == document.getElementById('detailsModal')) closeModal();
+        }
+    </script>
+</body>
+</html>

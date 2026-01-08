@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle réservation - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .form-container { max-width: 800px; margin: 0 auto; }
+        .form-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .form-section h4 { margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+        .resource-preview { display: flex; gap: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .resource-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; background: #3498db; display: flex; align-items: center; justify-content: center; color: white; }
+        .calendar-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-day { padding: 10px; text-align: center; border: 1px solid #eee; border-radius: 5px; cursor: pointer; }
+        .calendar-day.selected { background: #3498db; color: white; }
+        .calendar-day.unavailable { background: #f5f5f5; color: #ccc; cursor: not-allowed; }
+        .justification-box { width: 100%; min-height: 100px; padding: 15px; border: 2px solid #ecf0f1; border-radius: 8px; font-family: inherit; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-dashboard'></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="catalog.html">
+                            <i class='bx bx-search-alt'></i> Catalogue
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-reservation.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                            <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-reservations.html">
+                            <i class='bx bx-calendar-check'></i> Mes réservations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history.html">
+                            <i class='bx bx-history'></i> Historique
+                        </a>
+                    </li>
+                    <li>
+                        <a href="problem-report.html">
+                            <i class='bx bx-bug'></i> Signaler problème
+                        </a>
+                    </li>
+                    <li>
+                        <a href="user-profile.html">
+                            <i class='bx bx-cog'></i> Mon Profil
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Nouvelle demande de réservation</h3>
+                <div class="user-info">
+                    <span>Karim User</span>
+                    <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="form-container">
+                    <div class="form-section">
+                        <h4><i class='bx bx-server' style="color:#3498db;"></i> 1. Sélectionnez une ressource</h4>
+                        
+                        <div class="resource-preview">
+                            <div style="width:60px; height:60px; background:#3498db; border-radius:8px; display:flex; align-items:center; justify-content:center; color:white;">
+                                <i class='bx bx-server' style="font-size:28px;"></i>
+                            </div>
+                            <div style="flex:1;">
+                                <h5 style="margin:0 0 5px 0;">VM Ubuntu 22.04</h5>
+                                <div style="color:#7f8c8d; font-size:14px;">
+                                    4 vCPU • 8GB RAM • 100GB SSD • Ubuntu 22.04 LTS
+                                </div>
+                                <div style="margin-top:10px;">
+                                    <button class="btn-primary" style="padding:5px 15px; font-size:12px;" onclick="changeResource()">
+                                        <i class='bx bx-refresh'></i> Changer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class='bx bx-calendar' style="color:#3498db;"></i> 2. Définissez la période</h4>
+                        
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                            <div class="form-group">
+                                <label>Date de début</label>
+                                <input type="date" id="startDate" onchange="updateCalendar()">
+                            </div>
+                            <div class="form-group">
+                                <label>Date de fin</label>
+                                <input type="date" id="endDate" onchange="updateCalendar()">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top:15px;">
+                            <label style="display:block; margin-bottom:10px;">Sélection rapide :</label>
+                            <div style="display:flex; gap:10px;">
+                                <button type="button" onclick="setDuration(1)" style="padding:8px 15px; background:#ecf0f1; border:none; border-radius:5px;">1 jour</button>
+                                <button type="button" onclick="setDuration(3)" style="padding:8px 15px; background:#ecf0f1; border:none; border-radius:5px;">3 jours</button>
+                                <button type="button" onclick="setDuration(7)" style="padding:8px 15px; background:#ecf0f1; border:none; border-radius:5px;">1 semaine</button>
+                                <button type="button" onclick="setDuration(30)" style="padding:8px 15px; background:#ecf0f1; border:none; border-radius:5px;">1 mois</button>
+                            </div>
+                        </div>
+                        <div style="margin-top:25px;">
+                            <label>Calendrier de disponibilité :</label>
+                            <div class="calendar-container" id="calendar">
+                            </div>
+                            <div style="display:flex; gap:15px; margin-top:15px; font-size:12px;">
+                                <div><div style="display:inline-block; width:15px; height:15px; background:#3498db; border-radius:3px; margin-right:5px;"></div> Disponible</div>
+                                <div><div style="display:inline-block; width:15px; height:15px; background:#2ecc71; border-radius:3px; margin-right:5px;"></div> Sélectionné</div>
+                                <div><div style="display:inline-block; width:15px; height:15px; background:#e74c3c; border-radius:3px; margin-right:5px;"></div> Occupé</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class='bx bx-cog' style="color:#3498db;"></i> 3. Configuration</h4>
+                        
+                        <div class="form-group">
+                            <label>Type d'utilisation</label>
+                            <select>
+                                <option>Recherche académique</option>
+                                <option>Projet étudiant (PFE)</option>
+                                <option>Développement logiciel</option>
+                                <option>Test et validation</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Justification détaillée (obligatoire)</label>
+                            <textarea class="justification-box" placeholder="Décrivez votre projet, les besoins spécifiques, l'équipe concernée..."></textarea>
+                            <small style="color:#7f8c8d;">Cette justification sera examinée par le responsable technique</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Configuration supplémentaire</label>
+                            <textarea class="justification-box" placeholder="Configuration spécifique, logiciels à installer, accès réseau requis..."></textarea>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:30px;">
+                        <button class="btn-primary" style="background:#95a5a6;" onclick="location.href='catalog.html'">
+                            <i class='bx bx-arrow-back'></i> Retour
+                        </button>
+                        <button class="btn-primary" onclick="submitReservation()">
+                            <i class='bx bx-send'></i> Soumettre la demande
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div style="text-align:center; padding:20px;">
+                <i class='bx bx-check-circle' style="font-size:60px; color:#2ecc71; margin-bottom:15px;"></i>
+                <h3>Demande envoyée !</h3>
+                <p>Votre demande de réservation a été soumise avec succès.</p>
+                <p><strong>Référence :</strong> RES-2026-00145</p>
+                <div style="margin:30px 0;">
+                    <button class="btn-primary" onclick="location.href='my-reservations.html'">
+                        <i class='bx bx-list-check'></i> Voir mes réservations
+                    </button>
+                </div>
+                <button style="background:none; border:none; color:#3498db; cursor:pointer;" onclick="closeModal()">
+                    <i class='bx bx-x'></i> Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setDuration(days) {
+            const today = new Date();
+            const endDate = new Date();
+            endDate.setDate(today.getDate() + days);
+            
+            document.getElementById('startDate').value = today.toISOString().split('T')[0];
+            document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+            updateCalendar();
+        }
+
+        function updateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            
+            const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+            days.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.textContent = day;
+                dayHeader.style.fontWeight = 'bold';
+                dayHeader.style.color = '#7f8c8d';
+                calendar.appendChild(dayHeader);
+            });
+            for (let i = 1; i <= 28; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = i;
+                if ([5, 10, 15, 20].includes(i)) {
+                    dayDiv.classList.add('unavailable');
+                }
+                if (i >= 12 && i <= 14) {
+                    dayDiv.classList.add('selected');
+                }
+                
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        function changeResource() {
+            if (confirm('Souhaitez-vous retourner au catalogue pour choisir une autre ressource ?')) {
+                location.href = 'catalog.html';
+            }
+        }
+
+        function submitReservation() {
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const in3Days = new Date();
+            in3Days.setDate(in3Days.getDate() + 3);
+            
+            document.getElementById('startDate').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('endDate').value = in3Days.toISOString().split('T')[0];
+            updateCalendar();
+        });
+    </script>
+</body>
+</html>

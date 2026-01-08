@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signaler un problème - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .problem-form { max-width: 700px; margin: 0 auto; }
+        .form-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .priority-selector { display: flex; gap: 10px; margin: 15px 0; }
+        .priority-btn { flex: 1; padding: 12px; text-align: center; border: 2px solid #ecf0f1; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .priority-btn:hover { border-color: #3498db; }
+        .priority-btn.selected { border-color: #3498db; background: #e8f4ff; }
+        .priority-low.selected { border-color: #2ecc71; background: #e8f6f3; }
+        .priority-medium.selected { border-color: #f39c12; background: #fef5e7; }
+        .priority-high.selected { border-color: #e74c3c; background: #fadbd8; }
+        .upload-area { border: 2px dashed #bdc3c7; border-radius: 8px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .upload-area:hover { border-color: #3498db; background: #f8fafc; }
+        .upload-area i { font-size: 40px; color: #bdc3c7; margin-bottom: 10px; }
+        .uploaded-files { margin-top: 15px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-radius: 5px; margin-bottom: 5px; }
+        .emergency-banner { background: #fef5e7; border: 2px solid #f39c12; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
+        .emergency-banner i { color: #f39c12; font-size: 24px; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-dashboard'></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="catalog.html">
+                            <i class='bx bx-search-alt'></i> Catalogue
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-reservation.html">
+                            <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-reservations.html">
+                            <i class='bx bx-calendar-check'></i> Mes réservations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history.html">
+                            <i class='bx bx-history'></i> Historique
+                        </a>
+                    </li>
+                    <li>
+                        <a href="problem-report.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                            <i class='bx bx-bug'></i> Signaler problème
+                        </a>
+                    </li>
+                    <li>
+                        <a href="user-profile.html">
+                            <i class='bx bx-cog'></i> Mon Profil
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Signaler un problème technique</h3>
+                <div class="user-info">
+                    <span>Karim User</span>
+                    <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="problem-form">
+                    <div class="emergency-banner">
+                        <i class='bx bx-error-circle'></i>
+                        <div>
+                            <strong>Urgence ?</strong> Pour les problèmes critiques (panne complète, sécurité), 
+                            appelez le <strong>+212 5 00 00 00 00</strong> ou envoyez un email à 
+                            <strong>urgent@datacenter.ma</strong>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class='bx bx-info-circle' style="color:#3498db;"></i> 1. Décrivez le problème</h4>
+                        
+                        <div class="form-group">
+                            <label>Sujet / Titre</label>
+                            <input type="text" id="problemTitle" placeholder="Ex: VM Ubuntu inaccessible">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Ressource concernée</label>
+                            <select id="resourceSelect">
+                                <option value="">-- Sélectionnez une ressource --</option>
+                                <option value="vm-ubuntu">VM Ubuntu 22.04 (RES-2026-00123)</option>
+                                <option value="server-gpu">Serveur GPU NVIDIA</option>
+                                <option value="storage">Baie Stockage 04</option>
+                                <option value="other">Autre / Non spécifique</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Description détaillée</label>
+                            <textarea style="width:100%; min-height:150px; padding:15px; border:2px solid #ecf0f1; border-radius:8px;" 
+                                      placeholder="Décrivez précisément le problème, les erreurs rencontrées, ce que vous faisiez quand le problème est survenu..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Quand le problème a-t-il commencé ?</label>
+                            <input type="datetime-local" id="problemDate">
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class='bx bx-alarm' style="color:#3498db;"></i> 2. Priorité du problème</h4>
+                        
+                        <div class="priority-selector">
+                            <div class="priority-btn priority-low" onclick="selectPriority('low')">
+                                <i class='bx bx-info-circle' style="color:#2ecc71; font-size:24px;"></i>
+                                <div>Faible</div>
+                                <small>Amélioration / Suggestion</small>
+                            </div>
+                            <div class="priority-btn priority-medium selected" onclick="selectPriority('medium')">
+                                <i class='bx bx-error-circle' style="color:#f39c12; font-size:24px;"></i>
+                                <div>Moyenne</div>
+                                <small>Problème fonctionnel</small>
+                            </div>
+                            <div class="priority-btn priority-high" onclick="selectPriority('high')">
+                                <i class='bx bx-error-alt' style="color:#e74c3c; font-size:24px;"></i>
+                                <div>Élevée</div>
+                                <small>Impact sur l'utilisation</small>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top:15px; padding:15px; background:#f8fafc; border-radius:8px;">
+                            <strong>Niveau sélectionné :</strong> <span id="selectedPriority">Moyenne - Problème fonctionnel</span>
+                            <br>
+                            <small style="color:#7f8c8d;">Temps de réponse estimé : 2-4 heures ouvrables</small>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4><i class='bx bx-paperclip' style="color:#3498db;"></i> 3. Fichiers joints (optionnel)</h4>
+                        
+                        <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+                            <i class='bx bx-cloud-upload'></i>
+                            <div>Cliquez pour ajouter des captures d'écran, logs, etc.</div>
+                            <small>Formats acceptés : .png, .jpg, .txt, .log (max 5MB)</small>
+                        </div>
+                        <input type="file" id="fileUpload" multiple style="display:none;" onchange="handleFileUpload()">
+                        
+                        <div class="uploaded-files" id="uploadedFiles">
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:30px;">
+                        <button class="btn-primary" style="background:#95a5a6;" onclick="location.href='dashboard.html'">
+                            <i class='bx bx-arrow-back'></i> Annuler
+                        </button>
+                        <button class="btn-primary" style="background:#e74c3c;" onclick="submitEmergency()">
+                            <i class='bx bx-phone-call'></i> Urgence
+                        </button>
+                        <button class="btn-primary" onclick="submitProblem()">
+                            <i class='bx bx-send'></i> Soumettre le rapport
+                        </button>
+                    </div>
+                    <div class="form-section" style="margin-top:40px;">
+                        <h4><i class='bx bx-history' style="color:#3498db;"></i> Mes signalements récents</h4>
+                        
+                        <div style="background:#f8fafc; padding:15px; border-radius:8px; margin-bottom:10px;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong>VM lente depuis mise à jour</strong>
+                                <span class="status inactive" style="background:#d6eaf8; color:#2980b9;">En traitement</span>
+                            </div>
+                            <small>Signalé le 03/01/2026 • Référence : PROB-2026-00042</small>
+                        </div>
+                        
+                        <div style="background:#f8fafc; padding:15px; border-radius:8px;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong>Accès SSH refusé</strong>
+                                <span class="status active">Résolu</span>
+                            </div>
+                            <small>Signalé le 28/12/2025 • Référence : PROB-2025-00981</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div style="text-align:center; padding:20px;">
+                <i class='bx bx-check-circle' style="font-size:60px; color:#2ecc71; margin-bottom:15px;"></i>
+                <h3>Signalement envoyé !</h3>
+                <p>Votre rapport a été soumis avec succès.</p>
+                <p><strong>Référence :</strong> PROB-2026-00058</p>
+                <p><strong>Priorité :</strong> Moyenne</p>
+                <p><strong>Temps de réponse estimé :</strong> 2-4 heures</p>
+                <div style="margin:30px 0;">
+                    <button class="btn-primary" onclick="closeModal()">
+                        <i class='bx bx-check'></i> Compris
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectPriority(level) {
+            document.querySelectorAll('.priority-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            const selectedBtn = event.currentTarget;
+            selectedBtn.classList.add('selected');
+            
+            const priorityText = {
+                'low': 'Faible - Amélioration / Suggestion',
+                'medium': 'Moyenne - Problème fonctionnel',
+                'high': 'Élevée - Impact sur l\'utilisation'
+            };
+            
+            document.getElementById('selectedPriority').textContent = priorityText[level];
+        }
+        function handleFileUpload() {
+            const files = document.getElementById('fileUpload').files;
+            const uploadedFilesDiv = document.getElementById('uploadedFiles');
+            uploadedFilesDiv.innerHTML = '';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <i class='bx bx-file'></i> ${file.name}
+                        <br><small>${(file.size / 1024).toFixed(2)} KB</small>
+                    </div>
+                    <button onclick="removeFile(this)" style="background:none; border:none; color:#e74c3c; cursor:pointer;">
+                        <i class='bx bx-trash'></i>
+                    </button>
+                `;
+                uploadedFilesDiv.appendChild(fileItem);
+            }
+        }
+
+        function removeFile(button) {
+            button.closest('.file-item').remove();
+        }
+        function submitProblem() {
+            const title = document.getElementById('problemTitle').value;
+            const resource = document.getElementById('resourceSelect').value;
+            
+            if (!title || !resource) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+
+        function submitEmergency() {
+            if (confirm('Cette fonctionnalité vous redirigera vers la page des urgences. Continuer ?')) {
+                location.href = 'emergency.html';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            document.getElementById('problemTitle').value = '';
+            document.getElementById('resourceSelect').value = '';
+            document.getElementById('uploadedFiles').innerHTML = '';
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const localDateTime = now.toISOString().slice(0, 16);
+            document.getElementById('problemDate').value = localDateTime;
+        });
+    </script>
+</body>
+</html>

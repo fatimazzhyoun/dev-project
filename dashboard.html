@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Tableau de bord - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .reservation-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid; }
+        .reservation-card.pending { border-left-color: #f39c12; }
+        .reservation-card.approved { border-left-color: #2ecc71; }
+        .reservation-card.rejected { border-left-color: #e74c3c; }
+        .reservation-card.active { border-left-color: #3498db; }
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .quick-action-btn { background: white; border: none; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .quick-action-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .quick-action-btn i { font-size: 28px; margin-bottom: 10px; color: #3498db; }
+        .resource-tag { display: inline-block; background: #f0f7ff; color: #3498db; padding: 3px 10px; border-radius: 15px; font-size: 12px; margin-right: 5px; margin-top: 5px; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+<nav>
+    <ul>
+        <li>
+            <a href="dashboard.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                <i class='bx bx-dashboard'></i> Tableau de bord
+            </a>
+        </li>
+        <li>
+            <a href="catalog.html">
+                <i class='bx bx-search-alt'></i> Catalogue
+            </a>
+        </li>
+        <li>
+            <a href="new-reservation.html">
+                <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+            </a>
+        </li>
+        <li>
+            <a href="my-reservations.html">
+                <i class='bx bx-calendar-check'></i> Mes réservations
+            </a>
+        </li>
+        <li>
+            <a href="history.html">
+                <i class='bx bx-history'></i> Historique
+            </a>
+        </li>
+        <li>
+            <a href="problem-report.html">
+                <i class='bx bx-bug'></i> Signaler problème
+            </a>
+        </li>
+        <li>
+            <a href="user-profile.html">
+                <i class='bx bx-cog'></i> Mon Profil
+            </a>
+        </li>
+    </ul>
+</nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Tableau de bord personnel</h3>
+                <div class="header-actions">
+                    <div class="notif-box" onclick="toggleNotif()">
+                        <i class='bx bx-bell'></i>
+                        <span class="notif-count">3</span>
+                        <div class="notif-dropdown" id="notifDropdown">
+                            <div class="notif-header">Mes notifications</div>
+                            <div class="notif-item">
+                                <i class='bx bx-calendar-check notif-icon'></i>
+                                <div class="notif-content">
+                                    <strong>Réservation approuvée</strong>
+                                    <small>Serveur DL380 disponible</small>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <i class='bx bx-error-circle notif-icon' style="color:#f39c12"></i>
+                                <div class="notif-content">
+                                    <strong>Rappel</strong>
+                                    <small>Votre réservation expire dans 2 jours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <span>Karim User</span>
+                        <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="kpi-grid">
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div>
+                                <h4>Réservations actives</h4>
+                                <div class="number">3</div>
+                            </div>
+                            <div style="background:#e8f4ff; padding:10px; border-radius:50%; color:#3498db;">
+                                <i class='bx bx-play-circle' style="font-size:24px;"></i>
+                            </div>
+                        </div>
+                        <small style="color:#3498db;">En cours d'utilisation</small>
+                    </div>
+
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div>
+                                <h4>En attente</h4>
+                                <div class="number">2</div>
+                            </div>
+                            <div style="background:#fef5e7; padding:10px; border-radius:50%; color:#f39c12;">
+                                <i class='bx bx-time-five' style="font-size:24px;"></i>
+                            </div>
+                        </div>
+                        <small style="color:#f39c12;">En validation</small>
+                    </div>
+
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <div>
+                                <h4>Heures utilisées</h4>
+                                <div class="number">142</div>
+                            </div>
+                            <div style="background:#e8f6f3; padding:10px; border-radius:50%; color:#2ecc71;">
+                                <i class='bx bx-timer' style="font-size:24px;"></i>
+                            </div>
+                        </div>
+                        <small style="color:#7f8c8d;">Ce mois-ci</small>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:20px;">Mes prochaines réservations</h3>
+                    
+                    <div class="reservation-card approved">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h4 style="margin:0 0 5px 0;">VM Ubuntu 22.04</h4>
+                                <div style="color:#7f8c8d; font-size:14px;">
+                                    <i class='bx bx-calendar'></i> 15-25 Jan 2026 | 
+                                    <i class='bx bx-chip'></i> 4 vCPU, 8GB RAM
+                                </div>
+                                <div>
+                                    <span class="resource-tag">Projet PFE</span>
+                                    <span class="resource-tag">AI Training</span>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="status active">Active</span>
+                                <div style="margin-top:5px;">
+                                    <button class="btn-primary" style="padding:5px 15px; font-size:12px;">Accéder</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reservation-card pending">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h4 style="margin:0 0 5px 0;">Serveur GPU NVIDIA</h4>
+                                <div style="color:#7f8c8d; font-size:14px;">
+                                    <i class='bx bx-calendar'></i> 20-22 Fév 2026 | 
+                                    <i class='bx bx-chip'></i> 2x GPU, 128GB RAM
+                                </div>
+                                <div>
+                                    <span class="resource-tag">Rendu 3D</span>
+                                    <span class="resource-tag">Simulation</span>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="status inactive" style="background:#fef5e7; color:#f39c12;">En attente</span>
+                                <div style="margin-top:5px;">
+                                    <button class="btn-primary" style="padding:5px 15px; font-size:12px; background:#f39c12;">Suivre</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleNotif() {
+            let drop = document.getElementById('notifDropdown');
+            drop.style.display = (drop.style.display === 'block') ? 'none' : 'block';
+        }
+        const ctx1 = document.getElementById('reservationsChart')?.getContext('2d');
+        if (ctx1) {
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+                    datasets: [
+                        {
+                            label: 'Validées',
+                            data: [12, 19, 15, 25, 22, 30],
+                            backgroundColor: '#2ecc71',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Refusées',
+                            data: [2, 3, 1, 5, 2, 4],
+                            backgroundColor: '#e74c3c',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+        const ctx2 = document.getElementById('occupationChart')?.getContext('2d');
+        if (ctx2) {
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Espace Utilisé', 'Espace Libre'],
+                    datasets: [{
+                        data: [85, 15],
+                        backgroundColor: [
+                            '#2c3e50',
+                            '#ecf0f1'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

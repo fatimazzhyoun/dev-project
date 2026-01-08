@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue des ressources - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .resource-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f7; transition: 0.3s; }
+        .resource-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .resource-card h4 { margin: 0 0 10px 0; color: #2c3e50; }
+        .spec-list { list-style: none; margin: 15px 0; padding: 0; }
+        .spec-list li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f5f5f5; }
+        .spec-list li:last-child { border-bottom: none; }
+        .spec-list .label { color: #7f8c8d; }
+        .availability { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+        .availability.available { color: #2ecc71; }
+        .availability.unavailable { color: #e74c3c; }
+        .availability.maintenance { color: #f39c12; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+            <nav>
+                <ul>
+                    <!-- MENU STATIQUE POUR UTILISATEUR INTERNE -->
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-dashboard'></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="catalog.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                            <i class='bx bx-search-alt'></i> Catalogue
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-reservation.html">
+                            <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-reservations.html">
+                            <i class='bx bx-calendar-check'></i> Mes réservations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history.html">
+                            <i class='bx bx-history'></i> Historique
+                        </a>
+                    </li>
+                    <li>
+                        <a href="problem-report.html">
+                            <i class='bx bx-bug'></i> Signaler problème
+                        </a>
+                    </li>
+                    <li>
+                        <a href="user-profile.html">
+                            <i class='bx bx-cog'></i> Mon Profil
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Catalogue des ressources disponibles</h3>
+                <div class="user-info">
+                    <span>Karim User</span>
+                    <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- Filtres -->
+                <div class="filters-bar">
+                    <label><i class='bx bx-filter'></i> Filtres :</label>
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">Toutes les catégories</option>
+                        <option value="server">Serveurs</option>
+                        <option value="vm">Machines virtuelles</option>
+                        <option value="storage">Stockage</option>
+                        <option value="network">Réseau</option>
+                    </select>
+                    
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">Tous les statuts</option>
+                        <option value="available">Disponible</option>
+                        <option value="reserved">Réservé</option>
+                    </select>
+                    
+                    <input type="text" class="filter-select" placeholder="Rechercher..." style="flex:1;" id="searchInput">
+                    
+                    <button class="btn-primary" onclick="applyFilters()">
+                        <i class='bx bx-search'></i> Filtrer
+                    </button>
+                </div>
+
+                <!-- Grille des ressources -->
+                <div class="resource-grid">
+                    <!-- Serveur -->
+                    <div class="resource-card" data-category="server" data-status="available">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <h4>HP ProLiant DL380</h4>
+                            <span class="availability available">
+                                <i class='bx bx-check-circle'></i> Disponible
+                            </span>
+                        </div>
+                        <small style="color:#7f8c8d;">Serveur physique haute performance</small>
+                        
+                        <ul class="spec-list">
+                            <li><span class="label">CPU:</span> <strong>2x Xeon Gold</strong></li>
+                            <li><span class="label">RAM:</span> <strong>128GB DDR4</strong></li>
+                            <li><span class="label">Stockage:</span> <strong>4x 2TB SSD</strong></li>
+                            <li><span class="label">Localisation:</span> <strong>Baie A-12</strong></li>
+                        </ul>
+                        
+                        <button class="btn-primary" style="width:100%;" onclick="location.href='new-reservation.html?resource=hp-dl380'">
+                            <i class='bx bx-calendar-plus'></i> Réserver
+                        </button>
+                    </div>
+
+                    <!-- Machine virtuelle -->
+                    <div class="resource-card" data-category="vm" data-status="available">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <h4>VM Ubuntu 22.04</h4>
+                            <span class="availability available">
+                                <i class='bx bx-check-circle'></i> Disponible
+                            </span>
+                        </div>
+                        <small style="color:#7f8c8d;">Environnement Linux pour développement</small>
+                        
+                        <ul class="spec-list">
+                            <li><span class="label">vCPU:</span> <strong>4 cores</strong></li>
+                            <li><span class="label">RAM:</span> <strong>8GB</strong></li>
+                            <li><span class="label">OS:</span> <strong>Ubuntu 22.04 LTS</strong></li>
+                            <li><span class="label">Stockage:</span> <strong>100GB SSD</strong></li>
+                        </ul>
+                        
+                        <button class="btn-primary" style="width:100%;" onclick="location.href='new-reservation.html?resource=vm-ubuntu'">
+                            <i class='bx bx-calendar-plus'></i> Réserver
+                        </button>
+                    </div>
+
+                    <!-- Stockage -->
+                    <div class="resource-card" data-category="storage" data-status="reserved">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <h4>Baie SAN Dell</h4>
+                            <span class="availability unavailable">
+                                <i class='bx bx-time-five'></i> Réservé jusqu'au 20/01
+                            </span>
+                        </div>
+                        <small style="color:#7f8c8d;">Stockage partagé haute disponibilité</small>
+                        
+                        <ul class="spec-list">
+                            <li><span class="label">Capacité:</span> <strong>50TB</strong></li>
+                            <li><span class="label">Type:</span> <strong>All-Flash</strong></li>
+                            <li><span class="label">RAID:</span> <strong>6 (double parité)</strong></li>
+                            <li><span class="label">Connectivité:</span> <strong>10Gb iSCSI</strong></li>
+                        </ul>
+                        
+                        <button class="btn-primary" style="width:100%; background:#95a5a6;" disabled>
+                            <i class='bx bx-calendar-x'></i> Indisponible
+                        </button>
+                    </div>
+
+                    <!-- Réseau -->
+                    <div class="resource-card" data-category="network" data-status="maintenance">
+                        <div style="display:flex; justify-content:space-between; align-items:start;">
+                            <h4>Switch Cisco 2960</h4>
+                            <span class="availability maintenance">
+                                <i class='bx bx-wrench'></i> Maintenance
+                            </span>
+                        </div>
+                        <small style="color:#7f8c8d;">Commutateur réseau 48 ports</small>
+                        
+                        <ul class="spec-list">
+                            <li><span class="label">Ports:</span> <strong>48x 1GbE</strong></li>
+                            <li><span class="label">Uplinks:</span> <strong>4x 10Gb SFP+</strong></li>
+                            <li><span class="label">PoE:</span> <strong>370W</strong></li>
+                            <li><span class="label">Retour:</span> <strong>15/01/2026</strong></li>
+                        </ul>
+                        
+                        <button class="btn-primary" style="width:100%; background:#f39c12;">
+                            <i class='bx bx-bell-plus'></i> Être notifié
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div style="display:flex; justify-content:center; margin-top:30px;">
+                    <button style="background:#ecf0f1; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">1</button>
+                    <button style="background:#3498db; color:white; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">2</button>
+                    <button style="background:#ecf0f1; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">3</button>
+                    <button style="background:#ecf0f1; border:none; padding:8px 15px; margin:0 5px; border-radius:5px;">Suivant →</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Filtres
+        function applyFilters() {
+            const category = document.getElementById('categoryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            const cards = document.querySelectorAll('.resource-card');
+            
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                const cardStatus = card.getAttribute('data-status');
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                
+                let show = true;
+                
+                if (category !== 'all' && cardCategory !== category) show = false;
+                if (status !== 'all' && cardStatus !== status) show = false;
+                if (search && !title.includes(search)) show = false;
+                
+                card.style.display = show ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon profil - Data Center</title>
+    <link rel="stylesheet" href="css/admin-layout.css">
+    <link rel="stylesheet" href="css/admin-style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        .user-layout .sidebar { background-color: #1e2a38; }
+        .user-layout .logo h2 { background: linear-gradient(45deg, #3498db, #ffffff); -webkit-background-clip: text; }
+        .profile-container { max-width: 800px; margin: 0 auto; }
+        .profile-header { text-align: center; margin-bottom: 30px; }
+        .profile-avatar { width: 100px; height: 100px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 15px; }
+        .profile-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .stat-card .number { font-size: 24px; font-weight: 800; color: #3498db; }
+        .stat-card .label { color: #7f8c8d; font-size: 12px; }
+        .tab-buttons { display: flex; border-bottom: 2px solid #ecf0f1; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; }
+        .tab-btn.active { border-bottom-color: #3498db; color: #3498db; font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="user-layout">
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Mon Espace</h2></div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="dashboard.html">
+                            <i class='bx bx-dashboard'></i> Tableau de bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="catalog.html">
+                            <i class='bx bx-search-alt'></i> Catalogue
+                        </a>
+                    </li>
+                    <li>
+                        <a href="new-reservation.html">
+                            <i class='bx bx-calendar-plus'></i> Nouvelle réservation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-reservations.html">
+                            <i class='bx bx-calendar-check'></i> Mes réservations
+                        </a>
+                    </li>
+                    <li>
+                        <a href="history.html">
+                            <i class='bx bx-history'></i> Historique
+                        </a>
+                    </li>
+                    <li>
+                        <a href="problem-report.html">
+                            <i class='bx bx-bug'></i> Signaler problème
+                        </a>
+                    </li>
+                    <li>
+                        <a href="user-profile.html" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border-left: 3px solid #3498db;">
+                            <i class='bx bx-cog'></i> Mon Profil
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="logout-section">
+                <a href="login.html"><i class='bx bx-log-out'></i> Déconnexion</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h3>Mon profil utilisateur</h3>
+                <div class="user-info">
+                    <span>Karim User</span>
+                    <div style="width: 35px; height: 35px; background: #3498db; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">KU</div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">KU</div>
+                        <h2>Karim User</h2>
+                        <p style="color:#7f8c8d;">Doctorant en Informatique</p>
+                        <p><i class='bx bx-envelope'></i> karim.user@university.ma</p>
+                        <button class="btn-primary" style="margin-top:15px; padding:8px 20px;">
+                            <i class='bx bx-edit'></i> Modifier la photo
+                        </button>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="number">24</div>
+                            <div class="label">Réservations totales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="number">92%</div>
+                            <div class="label">Taux d'approbation</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="number">186</div>
+                            <div class="label">Jours utilisés</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="number">A</div>
+                            <div class="label">Statut de fiabilité</div>
+                        </div>
+                    </div>
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="openTab('info')">
+                            <i class='bx bx-user'></i> Informations
+                        </button>
+                        <button class="tab-btn" onclick="openTab('security')">
+                            <i class='bx bx-lock'></i> Sécurité
+                        </button>
+                        <button class="tab-btn" onclick="openTab('notifications')">
+                            <i class='bx bx-bell'></i> Notifications
+                        </button>
+                        <button class="tab-btn" onclick="openTab('preferences')">
+                            <i class='bx bx-cog'></i> Préférences
+                        </button>
+                    </div>
+                    <div id="info-tab" class="tab-content active">
+                        <div class="card">
+                            <h4 style="margin-bottom:20px;">Informations personnelles</h4>
+                            
+                            <form>
+                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+                                    <div class="form-group">
+                                        <label>Prénom</label>
+                                        <input type="text" value="Karim">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nom</label>
+                                        <input type="text" value="User">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" value="karim.user@university.ma">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Téléphone</label>
+                                    <input type="tel" value="+212 6 12 34 56 78">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Département / Laboratoire</label>
+                                    <input type="text" value="Laboratoire d'Informatique">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Statut</label>
+                                    <select>
+                                        <option>Doctorant</option>
+                                        <option>Enseignant-chercheur</option>
+                                        <option>Ingénieur</option>
+                                        <option>Étudiant</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="button" class="btn-primary" style="width:100%; margin-top:20px;">
+                                    <i class='bx bx-save'></i> Enregistrer les modifications
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="security-tab" class="tab-content">
+                        <div class="card">
+                            <h4 style="margin-bottom:20px;">Sécurité du compte</h4>
+                            
+                            <div class="form-group">
+                                <label>Mot de passe actuel</label>
+                                <input type="password" placeholder="Entrez votre mot de passe actuel">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Nouveau mot de passe</label>
+                                <input type="password" placeholder="Minimum 8 caractères">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Confirmer le nouveau mot de passe</label>
+                                <input type="password" placeholder="Retapez le nouveau mot de passe">
+                            </div>
+                            
+                            <div style="background:#f8fafc; padding:15px; border-radius:8px; margin:20px 0;">
+                                <h6 style="margin:0 0 10px 0;"><i class='bx bx-shield'></i> Sécurité renforcée</h6>
+                                <label style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                    <input type="checkbox"> Authentification à deux facteurs (2FA)
+                                </label>
+                                <label style="display:flex; align-items:center; gap:10px;">
+                                    <input type="checkbox"> Recevoir des alertes pour les nouvelles connexions
+                                </label>
+                            </div>
+                            
+                            <button type="button" class="btn-primary" style="width:100%;">
+                                <i class='bx bx-key'></i> Mettre à jour la sécurité
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="notifications-tab" class="tab-content">
+                        <div class="card">
+                            <h4 style="margin-bottom:20px;">Préférences de notifications</h4>
+                            
+                            <div style="margin-bottom:25px;">
+                                <h6 style="margin:0 0 15px 0;">Canaux de notification</h6>
+                                <label style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                    <span>Notifications par email</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                                <label style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                    <span>Notifications sur le tableau de bord</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                                <label style="display:flex; align-items:center; justify-content:space-between;">
+                                    <span>SMS pour les urgences</span>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                            </div>
+                            
+                            <div style="margin-bottom:25px;">
+                                <h6 style="margin:0 0 15px 0;">Types de notifications</h6>
+                                <label style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                    <span>Statut des réservations</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                                <label style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                    <span>Rappels d'expiration</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                                <label style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                                    <span>Maintenances planifiées</span>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                                <label style="display:flex; align-items:center; justify-content:space-between;">
+                                    <span>Nouvelles fonctionnalités</span>
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                            </div>
+                            
+                            <button type="button" class="btn-primary" style="width:100%;">
+                                <i class='bx bx-bell'></i> Enregistrer les préférences
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="preferences-tab" class="tab-content">
+                        <div class="card">
+                            <h4 style="margin-bottom:20px;">Préférences d'interface</h4>
+                            
+                            <div class="form-group">
+                                <label>Langue</label>
+                                <select>
+                                    <option>Français</option>
+                                    <option>Anglais</option>
+                                    <option>Arabe</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Thème</label>
+                                <select>
+                                    <option>Clair (défaut)</option>
+                                    <option>Sombre</option>
+                                    <option>Automatique</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Fuseau horaire</label>
+                                <select>
+                                    <option>Afrique/Casablanca (UTC+1)</option>
+                                    <option>UTC</option>
+                                    <option>Europe/Paris</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin:25px 0;">
+                                <h6 style="margin:0 0 15px 0;">Fonctionnalités avancées</h6>
+                                <label style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                                    <input type="checkbox"> Mode développeur
+                                </label>
+                                <label style="display:flex; align-items:center; gap:10px;">
+                                    <input type="checkbox"> Afficher les statistiques avancées
+                                </label>
+                            </div>
+                            
+                            <button type="button" class="btn-primary" style="width:100%;">
+                                <i class='bx bx-check'></i> Appliquer les préférences
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+    </script>
+</body>
+</html>
