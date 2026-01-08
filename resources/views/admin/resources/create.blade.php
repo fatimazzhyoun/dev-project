@@ -33,7 +33,7 @@
             <div class="logo"><h2>AdminPanel</h2></div>
             <nav>
                 <ul>
-                    <li><a href="/dashboard"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+                    <li><a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
                     <li>
                         <a href="{{ route('admin.resources.index') }}" style="background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), transparent); color: var(--primary-color); border-left: 3px solid var(--primary-color);">
                             <i class="fa-solid fa-server"></i> Ressources
