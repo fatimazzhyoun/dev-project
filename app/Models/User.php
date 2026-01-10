@@ -12,7 +12,7 @@ class User extends Authenticatable
 
     /**
      * Champs remplissables
-     */
+     */     
     protected $fillable = [
         'name',
         'email',

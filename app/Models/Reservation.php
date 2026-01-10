@@ -95,4 +95,6 @@ class Reservation extends Model
     {
         return $this->start_date->diffInHours($this->end_date);
     }
+
+    
 }

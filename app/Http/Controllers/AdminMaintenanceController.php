@@ -40,7 +40,7 @@ class AdminMaintenanceController extends Controller
     // Créer la maintenance
     $maintenance = ResourceMaintenance::create($validated);
 
-    // 🔥 CHANGER LE STATUS DE LA RESSOURCE
+    //  CHANGER LE STATUS DE LA RESSOURCE
     $resource = Resource::find($validated['resource_id']);
     $resource->update(['status' => 'maintenance']);
 
@@ -64,7 +64,7 @@ class AdminMaintenanceController extends Controller
         'notes' => 'nullable|string',
     ]);
 
-    // 🔥 Si la ressource change, remettre l'ancienne en "disponible"
+    //  Si la ressource change, remettre l'ancienne en "disponible"
     if ($maintenance->resource_id != $validated['resource_id']) {
         $oldResource = Resource::find($maintenance->resource_id);
         $oldResource->update(['status' => 'disponible']);
