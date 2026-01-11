@@ -2,11 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\AdminResourceController;
 use App\Http\Controllers\AdminMaintenanceController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\AccountRequestManagementController;
 use App\Http\Controllers\Admin\ReservationManagementController;
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -14,11 +22,13 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
+//ressources cote frontend
+    Route::get('/', [ResourceController::class, 'home'])->name('home');
+    Route::get('/resources/category/{id}', [ResourceController::class, 'byCategory'])->name('resources.byCategory');
+      
 
 // Route d'accueil publique
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+
 
 // Dashboard utilisateur
 Route::middleware(['auth'])->group(function () {
@@ -36,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'role:admin'])
+    ->middleware(['auth', 'admin'])
     ->group(function () {
     
     // DASHBOARD - DÉPLACÉ ICI
@@ -47,8 +57,10 @@ Route::middleware(['auth'])->group(function () {
             'totalCategories' => \App\Models\ResourceCategory::count(),
         ]);
     })->name('dashboard');  // nom: 'admin.dashboard'
-    
-    // RESSOURCES
+
+
+      
+    // RESSOURCES cote admin 
     Route::get('/resources', [AdminResourceController::class, 'index'])->name('resources.index');
     Route::get('/resources/create', [AdminResourceController::class, 'create'])->name('resources.create');
     Route::post('/resources', [AdminResourceController::class, 'store'])->name('resources.store');

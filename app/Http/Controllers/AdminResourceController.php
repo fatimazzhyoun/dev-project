@@ -26,7 +26,7 @@ class AdminResourceController extends Controller
     {
         // 1. Catégories
         $categories = ResourceCategory::where('is_active', true)->get();
-
+    
         // 2. Responsables (CORRECTION ICI : On récupère les utilisateurs)
         // J'utilise all() pour être sûr que ça s'affiche. 
         // Si vous avez un système de rôles, remplacez par : User::where('role', 'responsable')->get();

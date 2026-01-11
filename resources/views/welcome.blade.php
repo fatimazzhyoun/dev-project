@@ -918,13 +918,18 @@
                 <a href="#home" class="hover-lift">Accueil</a>
                 <a href="#resources" class="hover-lift">Ressources</a>
                 <a href="#rules" class="hover-lift">Règles</a>
-                @if (Route::has('login'))
+               @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="btn-login hover-lift">Tableau de bord</a>
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="btn-login hover-lift">Tableau de bord</a>
+                        @else
+                            <a href="{{ url('/dashboard') }}" class="btn-login hover-lift">Tableau de bord</a>
+                        @endif
                     @else
                         <button class="btn-login hover-lift" id="login-btn">Connexion</button>
                     @endauth
                 @endif
+
             </nav>
         </div>
     </header>
@@ -1097,7 +1102,7 @@
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Marrakech, Maroc</span>
+                            <span>Tanger, Maroc</span>
                         </div>
                     </div>
                 </div>
@@ -1108,59 +1113,28 @@
             </div>
         </div>
     </footer>
+<script>
+    window.__resources = @json($resources);
+</script>
+
 
     <script>
-        // Données des ressources (vue invité - informations limitées)
-        const resources = [
-            {
-                id: 1,
-                title: "Serveur HP ProLiant DL380",
-                type: "Serveur physique",
-                description: "Serveur haute performance pour applications critiques et virtualisation intensive.",
-                image: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400",
-                status: "available"
-            },
-            {
-                id: 2,
-                title: "VM VMware vSphere",
-                type: "Machine virtuelle",
-                description: "Environnement virtualisé avec ressources dédiées pour développement et tests.",
-                image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=400",
-                status: "available"
-            },
-            {
-                id: 3,
-                title: "Baie de stockage Dell EMC",
-                type: "Stockage",
-                description: "Solution de stockage SAN haute capacité avec réplication de données.",
-                image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400",
-                status: "maintenance"
-            },
-            {
-                id: 4,
-                title: "Commutateur Cisco Nexus",
-                type: "Réseau",
-                description: "Équipement réseau haute performance pour connectivité avancée.",
-                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400",
-                status: "available"
-            },
-            {
-                id: 5,
-                title: "Serveur GPU NVIDIA DGX",
-                type: "Serveur IA",
-                description: "Infrastructure dédiée au calcul intensif et apprentissage automatique.",
-                image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400",
-                status: "unavailable"
-            },
-            {
-                id: 6,
-                title: "Cluster Kubernetes",
-                type: "Conteneurs",
-                description: "Environnement conteneurisé pour déploiement et orchestration modernes.",
-                image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400",
-                status: "available"
-            }
-        ];
+    const resources = window.__resources || [];
+    // Images selon le type (TES 4 TYPES)
+    const typeImages = {
+        "serveur": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=400",
+        "machine virtuelle": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=400",
+        "stockage": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=400",
+        "reseau": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400",
+        "default": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400"
+    };
+
+    function getImageForResource(resource) {
+        // on normalise le type (minuscule)
+        const t = (resource.type || "").toString().toLowerCase().trim();
+        return typeImages[t] || typeImages.default;
+    }
+
 
         // Éléments DOM
         const loginBtn = document.getElementById('login-btn');
@@ -1176,6 +1150,7 @@
 
         // Générer les cartes de ressources
         function generateResourceCards() {
+            if (!resourcesContainer) return;
             resourcesContainer.innerHTML = '';
             
             resources.forEach(resource => {
@@ -1183,24 +1158,34 @@
                 card.className = 'resource-card gradient-border';
                 
                 let statusClass = '';
-                let statusText = '';
-                if (resource.status === 'available') {
-                    statusText = 'Disponible';
-                } else if (resource.status === 'unavailable') {
-                    statusClass = 'unavailable';
-                    statusText = 'Indisponible';
-                } else if (resource.status === 'maintenance') {
-                    statusClass = 'maintenance';
-                    statusText = 'Maintenance';
-                }
+let statusText = '';
+
+const s = (resource.status || '').toString().toLowerCase().trim();
+
+if (['available', 'disponible'].includes(s)) {
+    statusText = 'Disponible';
+} else if (['maintenance', 'en_maintenance'].includes(s)) {
+    statusClass = 'maintenance';
+    statusText = 'Maintenance';
+} else if (['reserved', 'reserve', 'réservé'].includes(s)) {
+    statusClass = 'unavailable';
+    statusText = 'Réservé';
+} else if (['unavailable', 'indisponible'].includes(s)) {
+    statusClass = 'unavailable';
+    statusText = 'Indisponible';
+} else {
+    // fallback si valeur inconnue
+    statusText = resource.status;
+}
+
                 
                 card.innerHTML = `
                     <div class="resource-image">
-                        <img src="${resource.image}" alt="${resource.title}">
+                        <img src="${getImageForResource(resource)}" alt="${resource.name}">
                     </div>
                     <div class="resource-content">
                         <span class="resource-type">${resource.type}</span>
-                        <h3 class="resource-title">${resource.title}</h3>
+                        <h3 class="resource-title">${resource.name}</h3>
                         <p class="resource-desc">${resource.description}</p>
                         <div class="resource-details">
                             <div class="resource-status">
@@ -1240,42 +1225,54 @@
             });
         }
 
-        closeModal.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-        });
+     if (closeModal) {
+  closeModal.addEventListener('click', () => {
+    loginModal.style.display = 'none';
+  });
+}
 
-        window.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                loginModal.style.display = 'none';
-            }
-        });
+window.addEventListener('click', (e) => {
+  if (loginModal && e.target === loginModal) {
+    loginModal.style.display = 'none';
+  }
+});
 
-        // Basculer entre login et register
-        showRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            modalTitle.textContent = 'Créer un compte';
-        });
+if (showRegister) {
+  showRegister.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (loginForm) loginForm.style.display = 'none';
+    if (registerForm) registerForm.style.display = 'block';
+    if (modalTitle) modalTitle.textContent = 'Créer un compte';
+  });
+}
 
-        showLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            registerForm.style.display = 'none';
-            loginForm.style.display = 'block';
-            modalTitle.textContent = 'Connexion';
-        });
+if (showLogin) {
+  showLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (registerForm) registerForm.style.display = 'none';
+    if (loginForm) loginForm.style.display = 'block';
+    if (modalTitle) modalTitle.textContent = 'Connexion';
+  });
+}
 
-        // Bouton explorer les ressources
-        exploreResourcesBtn.addEventListener('click', () => {
-            document.getElementById('resources').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-            exploreResourcesBtn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                exploreResourcesBtn.style.transform = '';
-            }, 200);
-        });
+if (exploreResourcesBtn) {
+  exploreResourcesBtn.addEventListener('click', () => {
+    const section = document.getElementById('resources');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    exploreResourcesBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => (exploreResourcesBtn.style.transform = ''), 200);
+  });
+}
+
+const learnMoreBtn = document.getElementById('learn-more');
+if (learnMoreBtn) {
+  learnMoreBtn.addEventListener('click', () => {
+    alert("DATA CENTER RESOURCE MANAGEMENT ...");
+  });
+}
+
 
         // Bouton "En savoir plus"
         document.getElementById('learn-more').addEventListener('click', () => {
@@ -1342,5 +1339,3 @@
     </script>
 </body>
 </html>
-
-mes7ih o 7ati hada

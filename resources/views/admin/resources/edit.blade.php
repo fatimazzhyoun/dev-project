@@ -1,6 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('content')
+<style>
+    
+</style>
 <div class="container">
     <h1>Modifier la ressource : {{ $resource->name }}</h1>
 

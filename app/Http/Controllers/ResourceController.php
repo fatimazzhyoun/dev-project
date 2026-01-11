@@ -45,4 +45,14 @@ class ResourceController extends Controller
         // On retourne la même vue, mais avec des données filtrées
         return view('resources.index', compact('categories', 'resources', 'currentCategory'));
     }
+
+    public function home()
+{
+    $resources = Resource::select('id', 'name', 'type', 'description', 'status')
+        ->where('status', '!=', 'desactive')
+        ->get();
+
+    return view('welcome', compact('resources'));
+}
+
 }
